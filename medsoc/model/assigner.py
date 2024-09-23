@@ -63,7 +63,7 @@ class MedSocShuffle:
             if person.email not in flat_assignments
         ]
 
-        while len(pool) > 2:
+        while len(pool) > 1:
             random.shuffle(pool)
 
             for person in pool:

@@ -6,7 +6,7 @@
       <div class="col-md-4" v-for="(emails, location) in locationEmailData" :key="location">
         <div class="card mb-4">
           <div class="card-header">
-            <h5 class="card-title">{{ location }}</h5>
+            <h5 class="card-title">{{ location }} ({{ emails.length }})</h5>
           </div>
           <div class="card-body">
             <ul class="list-group list-group-flush">
