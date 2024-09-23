@@ -34,9 +34,21 @@ def upload_file():
         people_array = data_handler.get_people_array()
 
         med_soc_shuffle = MedSocShuffle(people_array)
-        assignments = med_soc_shuffle.run()
+        result = med_soc_shuffle.run()
+        assignments, leftovers, seed = (
+            result["assignments"],
+            result["leftovers"],
+            result["seed"],
+        )
 
-        return jsonify({"message": "Shuffled!", "assignments": assignments}), 200
+        return jsonify(
+            {
+                "message": "Shuffled!",
+                "assignments": assignments,
+                "leftovers": leftovers,
+                "seed": seed,
+            }
+        ), 200
     else:
         return jsonify({"error": "Invalid file type"}), 400
 

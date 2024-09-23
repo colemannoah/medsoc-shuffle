@@ -40,7 +40,7 @@ class DataHandler:
             signup = row["signup"]
             leader = row["leader"]
 
-            people.append(Person(email, year, list(_preferences), signup, leader))
+            people.append(Person(email, year, list(set(_preferences)), signup, leader))
 
         return people
 
