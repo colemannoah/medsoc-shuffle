@@ -1,23 +1,13 @@
-import os
-from pathlib import Path
 from flask import Flask, request, jsonify
-from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
 from data.data_handler import DataHandler
 from model.assigner import MedSocShuffle
 
-UPLOAD_FOLDER = Path(__file__).parent / "uploads"
-if not os.path.exists(UPLOAD_FOLDER):
-    print(f"Creating {UPLOAD_FOLDER} directory")
-    os.makedirs(UPLOAD_FOLDER)
-
 ALLOWED_EXTENSIONS = {"csv"}
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 CORS(app)
 
 
