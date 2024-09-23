@@ -31,23 +31,19 @@ def upload_file():
         return jsonify({"error": "No file part in the request"}), 400
 
     file = request.files["file"]
-
     if file.filename == "":
         return jsonify({"error": "No file selected for uploading"}), 400
 
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+        data_handler = DataHandler(file_obj=file)
+        people_array = data_handler.get_people_array()
 
-    data_handler = DataHandler(
-        frame_dir=os.path.join(app.config["UPLOAD_FOLDER"], filename)
-    )
-    people_array = data_handler.get_people_array()
+        med_soc_shuffle = MedSocShuffle(people_array)
+        assignments = med_soc_shuffle.run()
 
-    med_soc_shuffle = MedSocShuffle(people_array)
-    assignments = med_soc_shuffle.run()
-
-    return jsonify({"message": "Shuffled!", "assignments": assignments}), 200
+        return jsonify({"message": "Shuffled!", "assignments": assignments}), 200
+    else:
+        return jsonify({"error": "Invalid file type"}), 400
 
 
 if __name__ == "__main__":

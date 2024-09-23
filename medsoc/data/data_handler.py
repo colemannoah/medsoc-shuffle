@@ -4,16 +4,20 @@ import pandas as pd
 from constants import constants
 from model.person import Person
 
+from werkzeug.datastructures import FileStorage
+from io import StringIO
+
 pd.set_option("future.no_silent_downcasting", True)
 
 
 class DataHandler:
-    def __init__(self, frame_dir: Path) -> None:
-        self._df_frame = frame_dir
+    def __init__(self, file_obj: FileStorage) -> None:
+        self.file_obj = file_obj
         self._df = pd.DataFrame()
 
     def get(self) -> pd.DataFrame:
-        _df = self._read_csv(self._df_frame)
+        string_io = StringIO(self.file_obj.read().decode("utf-8"))
+        _df = self._read_csv(string_io)
         _df = self._clean_data(_df)
         self._df = _df
 
