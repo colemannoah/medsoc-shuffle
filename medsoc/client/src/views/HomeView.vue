@@ -15,7 +15,7 @@
             accept=".csv"
             @change="handleFileUpload"
           />
-          <button class="btn btn-primary" type="button" @click="submitFile">Upload</button>
+          <button class="btn btn-primary" type="button" @click="submitFile" :disabled="loading">Upload</button>
         </div>
         <div v-if="message">{{ message }}</div>
         <div v-if="seededValue">Results seeded with {{ seededValue }}</div>
@@ -41,6 +41,7 @@ export default {
       message: '',
       locationEmailData: {},
       leftoverPeople: [],
+      loading: false
     }
   },
   methods: {
@@ -56,6 +57,8 @@ export default {
       const formData = new FormData()
       formData.append('file', this.selectedFile)
 
+      this.loading = true
+      this.message = 'Loading...'
       try {
         const response = await axios.post('/upload', formData, {
           headers: {
@@ -66,8 +69,10 @@ export default {
         this.locationEmailData = response.data.assignments
         this.leftoverPeople = response.data.leftovers
         this.seededValue = response.data.seed
+        this.loading = false
       } catch (error) {
         this.message = error.response.data.error || 'Error uploading file'
+        this.loading = false
       }
     }
   }
