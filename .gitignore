@@ -6,4 +6,4 @@ __pycache__
 *.ipynb
 .vercel
 *.egg-info
-package.json
+package-lock.json
