@@ -4,7 +4,8 @@
       <h1 class="display-5 fw-bold text-body-emphasis">MedDay Shuffle 🕺</h1>
       <div class="col-lg-6 mx-auto">
         <p class="lead mb-4">
-          Upload your CSV file from the Google Form and let the magic happen.
+          Upload your CSV file from the Google Form and let the magic happen.<br>
+          Powered by machine learning, made with ❤️ by Noah (Aldo wishes he could code)
         </p>
         <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
           <input
@@ -23,9 +24,6 @@
     <LocationEmailGrid :locationEmailData="locationEmailData" />
     <LeftoverPeopleTable :leftovers="leftoverPeople" />
   </main>
-  <footer class="text-center py-3">
-    <p>Powered by machine learning, made with ❤️ by Noah (Aldo wishes he could code)</p>
-  </footer>
 </template>
 
 <script setup>
