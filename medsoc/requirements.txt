@@ -1,6 +1,4 @@
 pandas
-numpy
 flask
 flask-cors
-pathlib
-werkzeug
+-e ./medsoc_lib

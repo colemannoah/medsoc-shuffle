@@ -4,8 +4,8 @@ from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
-from data.data_handler import DataHandler
-from model.assigner import MedSocShuffle
+from medsoc_lib.data.data_handler import DataHandler
+from medsoc_lib.model.assigner import MedSocShuffle
 
 UPLOAD_FOLDER = Path(__file__).parent / "uploads"
 if not os.path.exists(UPLOAD_FOLDER):
