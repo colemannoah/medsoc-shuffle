@@ -1,9 +1,11 @@
 <template>
-  <Analytics />
   <RouterView />
 </template>
 
 <script setup>
 import { RouterView } from 'vue-router'
-import { Analytics } from "@vercel/analytics/react"
+
+import { inject } from '@vercel/analytics';
+
+inject();
 </script>
