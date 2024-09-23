@@ -1,6 +1,7 @@
 from pathlib import Path
 import pandas as pd
-import constants.constants as constants
+
+from constants import constants
 from model.person import Person
 
 pd.set_option("future.no_silent_downcasting", True)

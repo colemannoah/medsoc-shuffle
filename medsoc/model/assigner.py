@@ -1,4 +1,5 @@
 import random
+
 from constants import constants
 from model.person import Person
 

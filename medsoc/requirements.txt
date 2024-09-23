@@ -1,4 +1,3 @@
 pandas
 flask
 flask-cors
--e ./medsoc_lib
