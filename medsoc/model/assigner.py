@@ -18,16 +18,31 @@ class MedSocShuffle:
         return _assigned_members
 
     def _assign_group_leaders(self, assignments: dict[str, list[str]]) -> Person:
+        pool = [person for person in self._people_array if person.leader]
+        random.shuffle(pool)
+
+        for person in pool:
+            for loc in person.preferences:
+                if (
+                    len(assignments[loc]) < constants.LOCATION_LIMITS[loc]["leaders"]
+                    and person.email not in assignments[loc]
+                ):
+                    assignments[loc].append(person.email)
+                    break
+
         pool = [
             person
             for person in self._people_array
-            if person.leader or person.year in ["GEM2", "UEM3 (2nd med)"]
+            if person.year in ["GEM2", "UEM3 (2nd med)"]
         ]
         random.shuffle(pool)
 
         for person in pool:
             for loc in person.preferences:
-                if len(assignments[loc]) < constants.LOCATION_LIMITS[loc]["leaders"]:
+                if (
+                    len(assignments[loc]) < constants.LOCATION_LIMITS[loc]["leaders"]
+                    and person.email not in assignments[loc]
+                ):
                     assignments[loc].append(person.email)
                     break
 
