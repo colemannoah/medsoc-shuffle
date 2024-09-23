@@ -22,7 +22,7 @@
     <LocationEmailGrid :locationEmailData="locationEmailData" />
   </main>
   <footer class="text-center py-3">
-    <p>Powered by machine learning, made with ❤️ by Noah (Aldo can't code)</p>
+    <p>Powered by machine learning, made with ❤️ by Noah (Aldo wishes he could code)</p>
   </footer>
 </template>
 
