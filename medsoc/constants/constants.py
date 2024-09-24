@@ -95,3 +95,5 @@ SIGNUP_MAP = {
 }
 
 DF_COLUMNS = list(DTYPE_DICT.keys())
+
+MAX_RUNS = 100

@@ -1,6 +1,6 @@
 import random
-import typing
 
+from typing import cast, Any
 from constants import constants
 from model.person import Person
 
@@ -11,7 +11,7 @@ class MedSocShuffle:
         self._seed = random.randint(0, 10000)
         random.seed(self._seed)
 
-    def run(self) -> dict[str, typing.Any]:
+    def run(self) -> dict[str, Any]:
         assignments: dict[str, list[str]] = {loc: [] for loc in constants.LOCATION_COLS}
         _assigned_leaders = self._assign_group_leaders(assignments)
         _assigned_members = self._assign_group_members(_assigned_leaders)
@@ -21,13 +21,14 @@ class MedSocShuffle:
     def _assign_group_leaders(
         self, assignments: dict[str, list[str]]
     ) -> dict[str, list[str]]:
+        limits = constants.LOCATION_LIMITS
         pool = [person for person in self._people_array if person.leader]
         random.shuffle(pool)
 
         for person in pool:
             for loc in person.preferences:
                 if (
-                    len(assignments[loc]) < constants.LOCATION_LIMITS[loc]["leaders"]
+                    len(assignments[loc]) < cast(int, limits[loc]["leaders"])
                     and person.email not in assignments[loc]
                 ):
                     assignments[loc].append(person.email)
@@ -44,7 +45,7 @@ class MedSocShuffle:
         for person in pool:
             for loc in person.preferences:
                 if (
-                    len(assignments[loc]) < constants.LOCATION_LIMITS[loc]["leaders"]
+                    len(assignments[loc]) < cast(int, limits[loc]["leaders"])
                     and person.email not in assignments[loc]
                 ):
                     assignments[loc].append(person.email)
@@ -55,8 +56,9 @@ class MedSocShuffle:
 
     def _assign_group_members(
         self, assignments: dict[str, list[str]]
-    ) -> dict[str, typing.Any]:
+    ) -> dict[str, Any]:
         limits = constants.LOCATION_LIMITS
+        runs = constants.MAX_RUNS
         flat_assignments = [
             email for sublist in assignments.values() for email in sublist
         ]
@@ -66,13 +68,14 @@ class MedSocShuffle:
             if person.email not in flat_assignments
         ]
 
-        while len(pool) > 1:
+        while runs >= 0 and pool:
             random.shuffle(pool)
+            runs -= 1
 
             for person in pool:
                 for loc in person.preferences:
                     if (
-                        len(assignments[loc]) < limits[loc]["people"]
+                        len(assignments[loc]) < cast(int, limits[loc]["people"])
                         and person.email not in assignments[loc]
                     ):
                         assignments[loc].append(person.email)
