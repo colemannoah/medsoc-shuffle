@@ -23,13 +23,16 @@ def index():
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
+        app.logger.error("No file part in the request")
         return jsonify({"error": "No file part in the request"}), 400
 
     file = request.files["file"]
     if file.filename == "":
+        app.logger.error("No file selected for uploading")
         return jsonify({"error": "No file selected for uploading"}), 400
 
     if file and allowed_file(file.filename):
+        app.logger.info("File uploaded successfully, processing...")
         data_handler = DataHandler(file_obj=file)
         people_array = data_handler.get_people_array()
 
@@ -41,6 +44,7 @@ def upload_file():
             result["seed"],
         )
 
+        app.logger.info("Shuffling complete!")
         return jsonify(
             {
                 "message": "Shuffled!",
@@ -50,6 +54,7 @@ def upload_file():
             }
         ), 200
     else:
+        app.logger.error("Invalid file type")
         return jsonify({"error": "Invalid file type"}), 400
 
 
