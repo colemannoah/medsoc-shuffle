@@ -47,8 +47,8 @@ class DataHandler:
     def output(self, output_dir: Path) -> None:
         self._df.to_csv(output_dir, index=False)
 
-    def _read_csv(self, frame_dir: Path) -> pd.DataFrame:
-        return pd.read_csv(frame_dir)
+    def _read_csv(self, string_io: StringIO) -> pd.DataFrame:
+        return pd.read_csv(string_io)
 
     def _clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         _df = self._clean_columns(df)
@@ -60,7 +60,7 @@ class DataHandler:
 
     def _clean_columns(self, df: pd.DataFrame) -> pd.DataFrame:
         _df = df.drop(columns=constants.COLUMNS_TO_DROP)
-        _df.columns = constants.DF_COLUMNS
+        _df.columns = pd.Index(constants.DF_COLUMNS)
         _df["signup"] = _df["signup"].replace(constants.SIGNUP_MAP)
         _df = _df[_df["signup"]]
         return _df

@@ -94,4 +94,4 @@ SIGNUP_MAP = {
     "": False,
 }
 
-DF_COLUMNS = DTYPE_DICT.keys()
+DF_COLUMNS = list(DTYPE_DICT.keys())

@@ -1,4 +1,5 @@
 import random
+import typing
 
 from constants import constants
 from model.person import Person
@@ -10,14 +11,16 @@ class MedSocShuffle:
         self._seed = random.randint(0, 10000)
         random.seed(self._seed)
 
-    def run(self) -> dict[str, list[str]]:
-        assignments = {loc: [] for loc in constants.LOCATION_COLS}
+    def run(self) -> dict[str, typing.Any]:
+        assignments: dict[str, list[str]] = {loc: [] for loc in constants.LOCATION_COLS}
         _assigned_leaders = self._assign_group_leaders(assignments)
         _assigned_members = self._assign_group_members(_assigned_leaders)
 
         return _assigned_members
 
-    def _assign_group_leaders(self, assignments: dict[str, list[str]]) -> Person:
+    def _assign_group_leaders(
+        self, assignments: dict[str, list[str]]
+    ) -> dict[str, list[str]]:
         pool = [person for person in self._people_array if person.leader]
         random.shuffle(pool)
 
@@ -52,7 +55,7 @@ class MedSocShuffle:
 
     def _assign_group_members(
         self, assignments: dict[str, list[str]]
-    ) -> dict[str, list[str] | dict[str, list[str]]]:
+    ) -> dict[str, typing.Any]:
         limits = constants.LOCATION_LIMITS
         flat_assignments = [
             email for sublist in assignments.values() for email in sublist
