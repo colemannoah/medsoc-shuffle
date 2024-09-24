@@ -1,3 +1,5 @@
 pandas
 flask
 flask-cors
+types-Flask-Cors
+pandas-stubs
