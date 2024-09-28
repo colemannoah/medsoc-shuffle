@@ -76,7 +76,6 @@ class DataHandler:
 
     def _remove_bad_rows(self, df: pd.DataFrame) -> pd.DataFrame:
         _df = df.dropna(subset=["email"])
-        _df = _df[_df["email"].str.contains("@ucd")]
 
         return _df
 
