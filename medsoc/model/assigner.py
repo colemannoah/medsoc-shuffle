@@ -45,6 +45,18 @@ class MedSocShuffle:
         self, assignments: dict[str, list[Person]]
     ) -> dict[str, list[Person]]:
         limits = constants.LOCATION_LIMITS
+
+        location_blacklist = [
+            "Dalkey",
+            "Blackrock",
+            "Booterstiwn",
+            "Ballsbridge",
+            "Bray",
+            "Deansgrange",
+            "Cabinteely",
+            "Clontarf",
+        ]
+
         pool = [person for person in self._people_array if person.leader]
         random.shuffle(pool)
 
@@ -52,7 +64,11 @@ class MedSocShuffle:
             for loc in person.preferences:
                 n = len(limits[loc])
 
-                if len(assignments[loc]) < n and person not in assignments[loc]:
+                if (
+                    len(assignments[loc]) < n
+                    and person not in assignments[loc]
+                    and loc not in location_blacklist
+                ):
                     assignments[loc].append(person)
                     pool.remove(person)
                     break
@@ -67,7 +83,11 @@ class MedSocShuffle:
         for person in pool:
             for loc in person.preferences:
                 n = len(limits[loc])
-                if len(assignments[loc]) < n and person not in assignments[loc]:
+                if (
+                    len(assignments[loc]) < n
+                    and person not in assignments[loc]
+                    and loc not in location_blacklist
+                ):
                     assignments[loc].append(person)
                     pool.remove(person)
                     break
@@ -86,6 +106,16 @@ class MedSocShuffle:
             person
             for person in self._people_array
             if person.email not in flat_assignments
+        ]
+        location_blacklist = [
+            "Dalkey",
+            "Blackrock",
+            "Booterstiwn",
+            "Ballsbridge",
+            "Bray",
+            "Deansgrange",
+            "Cabinteely",
+            "Clontarf",
         ]
 
         while runs >= 0 and pool:
@@ -108,6 +138,7 @@ class MedSocShuffle:
                         and un_leadered.email
                         not in [person.email for person in assignments[loc]]
                         and person in pool
+                        and loc not in location_blacklist
                     ):
                         assignments[loc].append(un_leadered)
                         pool.remove(person)
