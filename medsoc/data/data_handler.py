@@ -40,9 +40,6 @@ class DataHandler:
                 for pref in _preferences
             ]
 
-            if len(_preferences) != 3:
-                continue
-
             signup = row["signup"]
             leader = row["leader"]
 
