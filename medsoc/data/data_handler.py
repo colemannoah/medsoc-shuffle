@@ -34,6 +34,12 @@ class DataHandler:
             _preferences = [row["p1"], row["p2"], row["p3"]]
             _preferences = [pref for pref in _preferences if pd.notna(pref)]
 
+            # Replace Kilmainham with City Centre - Southside
+            _preferences = [
+                "City Centre - Southside" if pref == "Kilmainham" else pref
+                for pref in _preferences
+            ]
+
             if len(_preferences) != 3:
                 continue
 
@@ -71,6 +77,7 @@ class DataHandler:
     def _remove_bad_rows(self, df: pd.DataFrame) -> pd.DataFrame:
         _df = df.dropna(subset=["email"])
         _df = _df[_df["email"].str.contains("@ucd")]
+
         return _df
 
     def _insert_leader_col(self, df: pd.DataFrame) -> pd.DataFrame:

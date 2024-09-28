@@ -1,5 +1,7 @@
 import random
 
+import pandas as pd
+
 from constants import constants
 from model.person import Person
 
@@ -18,6 +20,26 @@ class MedSocShuffle:
         _assigned_members = self._assign_group_members(_assigned_leaders)
 
         return _assigned_members
+
+    def export_to_csv(self, assignments: dict[str, list[dict]]) -> None:
+        # Create a dataframe from the assignments
+        df = pd.DataFrame()
+        for loc in assignments:
+            for person in assignments[loc]:
+                df = df.append(
+                    {
+                        "Location": loc,
+                        "Email": person["email"],
+                        "Year": person["year"],
+                        "Preferences": person["preferences"],
+                        "Signup": person["signup"],
+                        "Leader": person["leader"],
+                    },
+                    ignore_index=True,
+                )
+
+        # Export the dataframe to a CSV file
+        df.to_csv("out/assignments.csv", index=False)
 
     def _assign_group_leaders(
         self, assignments: dict[str, list[Person]]
