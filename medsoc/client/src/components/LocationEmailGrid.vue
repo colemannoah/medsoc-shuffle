@@ -1,30 +1,31 @@
 <template>
-  <div v-if="locationEmailData" class="container mt-4">
-    <h4>Assignments</h4>
-    <div v-if="!isEmpty(locationEmailData)" class="row">
-      <!-- Loop through the dictionary passed as prop -->
-      <div class="col-md-4" v-for="(emails, location) in locationEmailData" :key="location">
-        <div class="card mb-4">
-          <div class="card-header">
-            <h5 class="card-title">{{ location }} ({{ emails.length }})</h5>
-          </div>
-          <div class="card-body">
-            <ul class="list-group list-group-flush">
-              <li 
-                class="list-group-item" 
-                v-for="(email, index) in emails" 
-                :key="email" 
-                :class="{ active: index === 0, 'small-text': true }"
-              >
-                {{ email }}
-              </li>
-            </ul>
-          </div>
-        </div>
+  <div class="container mt-4">
+    <div v-for="(members, location) in locationEmailData" :key="location" class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title mb-2">{{ location }} ({{ members.length }})</h5>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Year Group</th>
+              <th>Preferences</th>
+              <th>Leader Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(member, index) in sortedMembers(members)"
+              :key="index"
+              :class="{ 'table-primary': member.leader }"
+            >
+              <td>{{ member.email }}</td>
+              <td>{{ member.year }}</td>
+              <td>{{ member.preferences.sort().join(', ') }}</td>
+              <td>{{ member.leader ? 'Leader' : '' }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
-    <div v-else class="container mt-4">
-      <p>No data to display</p>
     </div>
   </div>
 </template>
@@ -35,15 +36,18 @@ export default {
     locationEmailData: {
       type: Object,
       required: true,
-      default: () => ({}),
-    },
+      default: () => ({})
+    }
   },
   methods: {
     isEmpty(obj) {
-      return Object.keys(obj).length === 0;
+      return Object.keys(obj).length === 0
     },
-  },
-};
+    sortedMembers(members) {
+      return [...members].sort((a, b) => b.leader - a.leader)
+    }
+  }
+}
 </script>
 
 <style scoped>

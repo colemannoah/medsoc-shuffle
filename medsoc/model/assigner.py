@@ -1,6 +1,5 @@
 import random
 
-from typing import cast, Any
 from constants import constants
 from model.person import Person
 
@@ -11,27 +10,28 @@ class MedSocShuffle:
         self._seed = random.randint(0, 10000)
         random.seed(self._seed)
 
-    def run(self) -> dict[str, Any]:
-        assignments: dict[str, list[str]] = {loc: [] for loc in constants.LOCATION_COLS}
+    def run(self) -> dict[str, list[dict]]:
+        assignments: dict[str, list[dict]] = {
+            loc: [] for loc in list(constants.LOCATION_LIMITS.keys())
+        }
         _assigned_leaders = self._assign_group_leaders(assignments)
         _assigned_members = self._assign_group_members(_assigned_leaders)
 
         return _assigned_members
 
     def _assign_group_leaders(
-        self, assignments: dict[str, list[str]]
-    ) -> dict[str, list[str]]:
+        self, assignments: dict[str, list[Person]]
+    ) -> dict[str, list[Person]]:
         limits = constants.LOCATION_LIMITS
         pool = [person for person in self._people_array if person.leader]
         random.shuffle(pool)
 
         for person in pool:
             for loc in person.preferences:
-                if (
-                    len(assignments[loc]) < cast(int, limits[loc]["leaders"])
-                    and person.email not in assignments[loc]
-                ):
-                    assignments[loc].append(person.email)
+                n = len(limits[loc])
+
+                if len(assignments[loc]) < n and person not in assignments[loc]:
+                    assignments[loc].append(person)
                     pool.remove(person)
                     break
 
@@ -44,23 +44,21 @@ class MedSocShuffle:
 
         for person in pool:
             for loc in person.preferences:
-                if (
-                    len(assignments[loc]) < cast(int, limits[loc]["leaders"])
-                    and person.email not in assignments[loc]
-                ):
-                    assignments[loc].append(person.email)
+                n = len(limits[loc])
+                if len(assignments[loc]) < n and person not in assignments[loc]:
+                    assignments[loc].append(person)
                     pool.remove(person)
                     break
 
         return assignments
 
     def _assign_group_members(
-        self, assignments: dict[str, list[str]]
-    ) -> dict[str, Any]:
+        self, assignments: dict[str, list[Person]]
+    ) -> dict[str, list[dict]]:
         limits = constants.LOCATION_LIMITS
         runs = constants.MAX_RUNS
         flat_assignments = [
-            email for sublist in assignments.values() for email in sublist
+            person.email for loc in assignments for person in assignments[loc]
         ]
         pool = [
             person
@@ -73,18 +71,45 @@ class MedSocShuffle:
             runs -= 1
 
             for person in pool:
+                un_leadered = Person(
+                    person.email,
+                    person.year,
+                    person.preferences,
+                    person.signup,
+                    False,
+                )
+
                 for loc in person.preferences:
+                    n = len(limits[loc])
                     if (
-                        len(assignments[loc]) < cast(int, limits[loc]["people"])
-                        and person.email not in assignments[loc]
+                        len(assignments[loc]) < (n * 5)
+                        and un_leadered.email
+                        not in [person.email for person in assignments[loc]]
+                        and person in pool
                     ):
-                        assignments[loc].append(person.email)
+                        assignments[loc].append(un_leadered)
                         pool.remove(person)
                         break
 
         # Check for duplicates
         for loc in assignments:
-            if len(assignments[loc]) != len(set(assignments[loc])):
+            if len(assignments[loc]) != len(
+                set([person.email for person in assignments[loc]])
+            ):
                 print(f"Duplicate in {loc}")
 
-        return {"assignments": assignments, "leftovers": pool, "seed": self._seed}
+        # Check is someone has been assigned twice
+        for person in self._people_array:
+            count = 0
+            for loc in assignments:
+                if person.email in [p.email for p in assignments[loc]]:
+                    count += 1
+            if count > 1:
+                print(f"Person {person.email} has been assigned {count} times")
+
+        results = {
+            loc: [person.to_dict() for person in assignments[loc]]
+            for loc in assignments
+        }
+
+        return {"assignments": results, "leftovers": pool, "seed": self._seed}
